@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relational Structure & Role Types | Seven Mysterious Sect</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f0e0c; --paper:#f5f0e8; --gold:#b8832e; --gold-lt:#ddb96a;
+  --jade:#2e6e5a; --jade-lt:#4a9b7f; --crimson:#7a2030;
+  --mist:#ebe5d9; --mist2:#cec7b8; --white:#ffffff;
+  --shadow:rgba(15,14,12,.12);
+  --fs:'Cormorant Garamond',serif; --fm:'IBM Plex Mono',monospace; --fi:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--fi);font-weight:300;line-height:1.8;overflow-x:hidden}
+
+/* ── nav ─────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:.7rem 2.8rem;background:rgba(245,240,232,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--mist2)}
+.nav-logo{font-family:var(--fm);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--jade)}
+.nav-links{display:flex;gap:1.8rem;list-style:none}
+.nav-links a{text-decoration:none;font-family:var(--fm);font-size:.64rem;letter-spacing:.07em;color:var(--ink);opacity:.55;transition:opacity .2s,color .2s}
+.nav-links a:hover{opacity:1;color:var(--jade)}
+
+/* ── hero ────────────────────────────── */
+.hero{min-height:100vh;display:grid;place-items:center;padding:8rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 55% at 50% 30%,rgba(184,131,46,.07) 0%,transparent 70%),radial-gradient(ellipse 55% 70% at 82% 76%,rgba(46,110,90,.05) 0%,transparent 60%)}
+.hero-bg::before{content:'';position:absolute;top:8%;right:7%;width:260px;height:260px;border-radius:50%;border:1px solid rgba(184,131,46,.14);animation:spin 68s linear infinite}
+.hero-bg::after{content:'';position:absolute;bottom:11%;left:5%;width:175px;height:175px;border-radius:50%;border:1px solid rgba(46,110,90,.11);animation:spin 50s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-inner{position:relative;z-index:1;max-width:820px}
+
+/* green tag box — two lines */
+.hero-tag{display:inline-flex;flex-direction:column;align-items:center;gap:.18rem;font-family:var(--fm);font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--jade);border:1.5px solid var(--jade-lt);padding:.45rem 1.1rem;border-radius:3px;margin-bottom:2rem;animation:fi 1s ease both;line-height:1.5}
+.hero-tag span{display:block;letter-spacing:.22em}
+
+.hero h1{font-family:var(--fs);font-size:clamp(2rem,4.8vw,3.7rem);font-weight:300;line-height:1.22;margin-bottom:.8rem;animation:fi 1s .15s ease both}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:.95rem;opacity:.58;max-width:530px;margin:0 auto 1.6rem;animation:fi 1s .3s ease both}
+.hero-authors{font-family:var(--fm);font-size:.68rem;letter-spacing:.13em;color:var(--jade);margin-bottom:.3rem;animation:fi 1s .42s ease both}
+.scroll-cue{position:absolute;bottom:1.8rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.38rem;font-family:var(--fm);font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;opacity:.3}
+.scroll-cue::after{content:'';width:1px;height:32px;background:linear-gradient(to bottom,var(--ink),transparent);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.65}}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── section scaffolding ─────────────── */
+.sec{padding:5.5rem 2rem}
+.si{max-width:1060px;margin:0 auto}
+.sec--alt{background:var(--mist)}
+.slbl{font-family:var(--fm);font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--jade);margin-bottom:.7rem}
+.stitle{font-family:var(--fs);font-size:clamp(1.55rem,2.8vw,2.45rem);font-weight:300;line-height:1.25;margin-bottom:1.1rem}
+.dvd{width:40px;height:2px;background:var(--gold);margin:1rem 0 1.9rem}
+
+/* text helpers */
+.body-p{font-size:.95rem;line-height:1.8;margin-bottom:1.1rem;opacity:.84}
+.sub-h{font-family:var(--fs);font-size:1.2rem;font-weight:600;margin:2rem 0 .6rem;color:var(--jade)}
+.sub-h2{font-family:var(--fi);font-size:.9rem;font-weight:500;margin:1.4rem 0 .4rem;color:var(--ink);opacity:.85}
+.callout{background:white;border-left:3px solid var(--gold);padding:1.1rem 1.6rem;border-radius:0 4px 4px 0;margin:1.5rem 0;font-size:.88rem;line-height:1.75;opacity:.9}
+.repro-note{font-family:var(--fm);font-size:.68rem;color:var(--jade);opacity:.7;margin-top:1.8rem;line-height:1.7;border-top:1px solid var(--mist2);padding-top:.9rem}
+
+/* ── two-col layout ─────────────────── */
+.two-col{display:grid;grid-template-columns:3fr 2fr;gap:3rem;align-items:start}
+.side-card{background:var(--ink);color:var(--paper);border-radius:5px;padding:1.4rem}
+.side-card h5{font-family:var(--fm);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:.9rem}
+.rq-item{display:flex;gap:.7rem;margin-bottom:.75rem;font-size:.84rem;line-height:1.55;opacity:.83}
+.rq-n{font-family:var(--fm);color:var(--gold-lt);font-size:.66rem;min-width:1.2rem;padding-top:.1rem;flex-shrink:0}
+
+/* ── network canvas ─────────────────── */
+#net-wrap{position:relative;background:#0b0f18;border-radius:7px;overflow:hidden;margin:2rem 0;box-shadow:0 16px 48px rgba(0,0,0,.3)}
+#net-c{display:block;width:100%}
+.nip{position:absolute;top:1rem;right:1rem;background:rgba(11,15,24,.93);border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:1rem;min-width:220px;color:#e0ddd6;font-size:.74rem;display:none;backdrop-filter:blur(10px)}
+.nip.on{display:block}
+.nip-name{font-family:var(--fs);font-size:1rem;font-weight:600;margin-bottom:.25rem}
+.nip-tag{font-family:var(--fm);font-size:.56rem;opacity:.4;margin-bottom:.6rem;letter-spacing:.08em}
+.nip-row{display:flex;justify-content:space-between;gap:.8rem;margin-bottom:.22rem;opacity:.72;font-size:.72rem}
+.nip-lbl{opacity:.45}
+.vc{display:flex;gap:.65rem;margin-top:1rem;flex-wrap:wrap}
+.btn{font-family:var(--fm);font-size:.62rem;letter-spacing:.06em;padding:.36rem .9rem;border:1px solid var(--mist2);background:transparent;color:var(--ink);border-radius:2px;cursor:pointer;transition:all .2s}
+.btn:hover,.btn.on{background:var(--jade);color:#fff;border-color:var(--jade)}
+.vleg{display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:1rem;font-family:var(--fm);font-size:.62rem;opacity:.62}
+.li{display:flex;align-items:center;gap:.38rem}
+.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── data tables ─────────────────────── */
+.tbl-wrap{overflow-x:auto;margin:1.2rem 0;border-radius:5px;box-shadow:0 2px 12px var(--shadow)}
+table.dt{width:100%;border-collapse:collapse;font-size:.8rem;background:white}
+table.dt th{font-family:var(--fm);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;text-align:left;padding:.65rem .9rem;background:var(--jade);color:white;white-space:nowrap}
+table.dt td{padding:.62rem .9rem;border-bottom:1px solid var(--mist);vertical-align:top;line-height:1.45}
+table.dt tr:hover td{background:rgba(46,110,90,.04)}
+table.dt tr.hdr-row td{background:rgba(46,110,90,.07);font-weight:500}
+.num-cell{font-family:var(--fm);font-size:.74rem;text-align:right}
+.fact-badge{display:inline-block;font-family:var(--fm);font-size:.52rem;padding:.1rem .38rem;border-radius:2px;letter-spacing:.06em;text-transform:uppercase}
+.fb-disc{background:#7a2030;color:#fff}
+.fb-mgmt{background:#b8832e;color:#fff}
+.fb-att{background:#2e6e5a;color:#fff}
+.fb-out{background:#6b5bb3;color:#fff}
+.fb-qij{background:#555;color:#fff}
+.fb-ext{background:#c0392b;color:#fff}
+.fb-mast{background:#1a6e8e;color:#fff}
+
+/* ── interactive viz tabs ───────────── */
+.tab-nav{display:flex;gap:0;margin-bottom:0;border-bottom:2px solid var(--mist2)}
+.tab-btn{font-family:var(--fm);font-size:.62rem;letter-spacing:.08em;padding:.5rem 1.1rem;border:none;background:transparent;color:var(--ink);opacity:.5;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tab-btn.on{opacity:1;color:var(--jade);border-bottom-color:var(--jade)}
+.tab-panel{display:none;padding-top:1.4rem}
+.tab-panel.on{display:block}
+
+/* ── role cards ─────────────────────── */
+.role-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem;margin:1.6rem 0}
+.role-card{border-radius:5px;padding:1.4rem;border:1px solid var(--mist2);transition:box-shadow .2s,border-color .2s;background:white}
+.role-card:hover{box-shadow:0 6px 22px var(--shadow);border-color:var(--jade-lt)}
+.rc-type{font-family:var(--fm);font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.5rem;color:var(--jade)}
+.rc-title{font-family:var(--fs);font-size:1.1rem;font-weight:600;margin-bottom:.4rem}
+.rc-stats{font-family:var(--fm);font-size:.68rem;color:var(--gold);margin-bottom:.55rem}
+.rc-body{font-size:.8rem;opacity:.72;line-height:1.55}
+
+/* ── conclusion boxes ───────────────── */
+.conc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;margin:1.8rem 0}
+.conc-card{border-radius:5px;padding:1.5rem;border-left:3px solid var(--gold)}
+.conc-card:nth-child(1){background:#fff8ee;border-color:var(--gold)}
+.conc-card:nth-child(2){background:#eef4f1;border-color:var(--jade)}
+.conc-card:nth-child(3){background:#f8eef0;border-color:var(--crimson)}
+.conc-card:nth-child(4){background:#f0eef8;border-color:#6b5bb3}
+.conc-num{font-family:var(--fm);font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;opacity:.5;margin-bottom:.4rem}
+.conc-title{font-size:.95rem;font-weight:600;margin-bottom:.7rem;line-height:1.35}
+.conc-body{font-size:.82rem;opacity:.78;line-height:1.65}
+.limit-box{background:white;border:1px solid var(--mist2);border-radius:5px;padding:1.4rem 1.7rem;margin-top:1.6rem}
+.limit-box h4{font-size:.9rem;font-weight:600;color:var(--crimson);margin-bottom:.65rem}
+.limit-box p{font-size:.82rem;opacity:.73;line-height:1.6;margin-bottom:.5rem}
+
+/* ── sources ────────────────────────── */
+.src-tbl{width:100%;border-collapse:collapse;font-size:.8rem;margin:1.4rem 0}
+.src-tbl th{font-family:var(--fm);font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;text-align:left;padding:.58rem .85rem;border-bottom:2px solid var(--mist2);color:var(--jade)}
+.src-tbl td{padding:.7rem .85rem;border-bottom:1px solid var(--mist);vertical-align:top;line-height:1.45}
+.src-tbl tr:hover td{background:rgba(46,110,90,.04)}
+.src-a{color:var(--jade);text-decoration:none;font-family:var(--fm);font-size:.66rem;word-break:break-all}
+.src-a:hover{text-decoration:underline}
+.sbdg{display:inline-block;background:var(--jade);color:#fff;font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;padding:.08rem .36rem;border-radius:2px;text-transform:uppercase}
+.ref-list{font-size:.82rem;line-height:1.95;opacity:.8}
+.ref-list p{padding-left:2em;text-indent:-2em;margin-bottom:.42rem}
+
+/* ── tracker ────────────────────────── */
+.tracker{background:var(--ink);color:var(--paper);border-radius:6px;padding:1.9rem;margin:1.5rem 0}
+.trk-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;flex-wrap:wrap;gap:.6rem}
+.trk-hdr h3{font-family:var(--fs);font-size:1.15rem;font-weight:400}
+.trk-tag{font-family:var(--fm);font-size:.56rem;letter-spacing:.14em;border:1px solid rgba(255,255,255,.18);padding:.22rem .65rem;border-radius:2px;opacity:.5}
+.mem-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:1.5rem}
+.mem-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:.9rem;cursor:pointer;transition:background .2s,border-color .2s}
+.mem-card:hover{background:rgba(255,255,255,.09);border-color:rgba(184,131,46,.4)}
+.mem-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.72rem;margin-bottom:.45rem}
+.mem-name{font-size:.84rem;margin-bottom:.2rem;font-weight:500}
+.mem-role{font-family:var(--fm);font-size:.54rem;opacity:.38;letter-spacing:.06em}
+.mem-pts{font-family:var(--fm);font-size:.86rem;color:var(--gold-lt);margin-top:.3rem}
+#wk-wrap{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:4px;padding:1.1rem}
+.ct{font-family:var(--fm);font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;opacity:.32;margin-bottom:.7rem}
+#wk-c{width:100%}
+.log{margin-top:1.1rem;max-height:200px;overflow-y:auto}
+.log-e{display:flex;gap:.7rem;padding:.46rem 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.74rem;opacity:.74}
+.log-d{font-family:var(--fm);font-size:.56rem;opacity:.32;min-width:56px;padding-top:.05rem}
+.log-wk{font-family:var(--fm);font-size:.6rem;color:var(--gold-lt);opacity:1;margin-bottom:.2rem;padding-top:.3rem;border-bottom:1px solid rgba(255,255,255,.1);font-weight:500}
+.log-m{color:var(--gold-lt)}
+
+footer{background:var(--ink);color:var(--paper);padding:2.4rem 2rem;text-align:center}
+footer p{opacity:.32;font-size:.74rem;line-height:1.85}
+footer a{color:var(--jade-lt);text-decoration:none}
+
+@media(max-width:768px){
+  nav{padding:.7rem 1.2rem}.nav-links{display:none}
+  .two-col,.conc-grid,.find-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─────────────────────────────────────────── -->
+<nav>
+  <span class="nav-logo">Group 6 · DH Project</span>
+  <ul class="nav-links">
+    <li><a href="#s1">Navigate</a></li>
+    <li><a href="#s2">Process</a></li>
+    <li><a href="#s3">Network</a></li>
+    <li><a href="#s4">Role Types</a></li>
+    <li><a href="#s5">Conclusions</a></li>
+    <li><a href="#s6">Sources</a></li>
+    <li><a href="#s7">References</a></li>
+    <li><a href="#s8">Collaboration</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <!-- green box: two lines -->
+    <div class="hero-tag">
+      <span>Digital Humanities · Group 6</span>
+      <span>Social Network Analysis</span>
+    </div>
+    <h1>Relational Structure<br>&amp; <em>Role Types</em></h1>
+    <p class="hero-sub">A dual analysis of the Seven Mysterious Sect character network in<br><em>A Record of a Mortal's Journey to Immortality</em></p>
+    <div class="hero-authors">XUSHIYI (25087273) &nbsp;·&nbsp; YUAN JIANGCONG (25086223)</div>
+  </div>
+  <div class="scroll-cue">Scroll</div>
+</section>
+
+<!-- ─── 01 RESEARCH NAVIGATE ─────────────────────────── -->
+<section class="sec" id="s1">
+  <div class="si">
+    <div class="slbl">01 — Research Navigate</div>
+    <h2 class="stitle">Propose and Questions</h2>
+    <div class="dvd"></div>
+    <div class="two-col">
+      <div>
+        <h3 class="sub-h">1.1 Research Propose</h3>
+        <p class="body-p">This study takes the narrative space of the Seven Mysterious Sects in "A Record of a Mortal's Journey to Immortality" as the object of analysis, using social network analysis methods to conduct a structured examination of the relationships among its characters. The study revolves around two objectives: first, to provide a topological description of the character relationship network of the Seven Mysterious Sects at the overall level, clarifying the network's connectivity structure, density level, and core–periphery distribution; second, based on individual characters' degree centrality, betweenness centrality, and clustering coefficient, to summarize the recurring structural role types in the network and assign them narrative-functional designations. Overall, this study does not intend to replace close reading of the text with quantitative analysis but rather aims to offer a verifiable, structural reference for the functional positioning of characters.</p>
+        <h3 class="sub-h">1.2 Research Question</h3>
+        <p class="body-p">This study revolves around two core questions:</p>
+        <div class="side-card" style="margin-top:1rem">
+          <h5>Core Questions</h5>
+          <div class="rq-item"><span class="rq-n">Q1</span><span>What kind of topological structure does the network of character relationships in the Seven Mysterious Sects' space present?</span></div>
+          <div class="rq-item"><span class="rq-n">Q2</span><span>In this network, into what typical narrative character types can the characters be categorized?</span></div>
+        </div>
+      </div>
+      <div style="padding-top:.5rem">
+        <div style="background:white;border:1px solid var(--mist2);border-radius:5px;padding:1.4rem">
+          <div style="font-family:var(--fm);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--jade);margin-bottom:.8rem">Study at a Glance</div>
+          <div style="font-size:.82rem;line-height:1.9;opacity:.78">
+            <div style="margin-bottom:.5rem"><strong>Corpus:</strong> Chapters 1–99<br>~190,000 characters</div>
+            <div style="margin-bottom:.5rem"><strong>Characters:</strong> 20 nodes</div>
+            <div style="margin-bottom:.5rem"><strong>Edges:</strong> 53 co-occurrence edges</div>
+            <div style="margin-bottom:.5rem"><strong>Network density:</strong> 0.279</div>
+            <div style="margin-bottom:.5rem"><strong>Method:</strong> Python + NetworkX</div>
+            <div><strong>Role types found:</strong> 5</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 02 RESEARCH PROCESS ───────────────────────────── -->
+<section class="sec sec--alt" id="s2">
+  <div class="si">
+    <div class="slbl">02 — Research Process</div>
+    <h2 class="stitle">Data, Methods, and Analysis Pipeline</h2>
+    <div class="dvd"></div>
+
+    <h3 class="sub-h">2.1 Data Source</h3>
+    <p class="body-p">The texts used in this study are from <em>A Record of a Mortal's Journey to Immortality</em> written by Wang Yu. Chapters specifically related to the narrative space of the 'Seven Mysterious Sects' were selected, specifically from Chapter 1 to Chapter 99. This period covers the main experiences of the novel's protagonist Han Li from entering the Seven Mysterious Sects to leaving this sect, representing the narrative section with the densest character relationships and the most complete sect structure of the Seven Mysterious Sects. The corpus can be downloaded at <a class="src-a" href="https://www.sudugu.org/128/txt.html#dir" target="_blank">sudugu.org/128/txt.html#dir</a>. The total word count of the text is approximately 190,000 words.</p>
+
+    <h3 class="sub-h">2.2 Analysis Steps</h3>
+
+    <h4 class="sub-h2">2.2.1 Determining Character Selection Criteria</h4>
+    <p class="body-p">The character selection in this study follows the following criteria: Inclusion criteria are (1) having a clear name or stable title in the text; (2) having an explicit interaction such as dialogue, conflict, or cooperation with at least one other character. Exclusion criteria are (1) characters who are only mentioned in the narration but never appear; (2) background characters who have neither name nor interaction, such as "a disciple" or "a passerby."</p>
+    <p class="body-p">According to the above criteria, a total of 28 characters were selected, covering the sect leaders, elders, hall masters, inner disciples, outer disciples, and relevant personnel of the Seven Mysterious Sect.</p>
+
+    <h4 class="sub-h2">2.2.2 Relationship Extraction and Encoding</h4>
+    <p class="body-p">This study primarily uses Python, supplemented by manual verification, to perform relationship extraction. First, Python is used to segment the text into sentences and perform named entity recognition, extracting a set of characters and calculating co-occurrence frequencies to generate a list of candidate relationships. Subsequently, project members conduct a preliminary manual verification. Ultimately, <strong>87 valid relationship edges</strong> are obtained.</p>
+
+    <h4 class="sub-h2">2.2.3 Analysis of Indicators</h4>
+
+    <div style="background:white;border-radius:5px;padding:1.4rem 1.8rem;margin:1.2rem 0;border:1px solid var(--mist2)">
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--jade);margin-bottom:1rem">2.2.3.1 Problem 1 — Network Topology</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;margin-bottom:1.2rem">
+        <div><strong style="font-size:.84rem">Connectedness</strong><p style="font-size:.8rem;opacity:.72;margin-top:.3rem;line-height:1.55">Are all people in the network connected? Are people isolated or separated into isolated groups? — the overall accessibility and degree of fragmentation of the network.</p></div>
+        <div><strong style="font-size:.84rem">Density Level</strong><p style="font-size:.8rem;opacity:.72;margin-top:.3rem;line-height:1.55">What is the actual number of connections as a percentage of the maximum possible? — the overall tightness and cohesion of the network. The higher the number, the more like a society of acquaintances.</p></div>
+        <div><strong style="font-size:.84rem">Core–Periphery</strong><p style="font-size:.8rem;opacity:.72;margin-top:.3rem;line-height:1.55">Are there a small number of "core people" tightly connected to each other, while "periphery people" are only connected to the core? — an uneven distribution of power and resources.</p></div>
+      </div>
+      <p style="font-size:.82rem;opacity:.75;line-height:1.65">Network computing with Python + NetworkX. Relational data is entered as an edge list and read by pandas. Connected structures are captured by <code>connected_components</code>. Density is calculated by the <code>density</code> function. The core–periphery distribution is divided into core layer (≥0.6), transition layer (0.2–0.6), and edge layer (&lt;0.2) based on normalised degree centrality. Spring Layout was used for visualisation, and colour mapping was used to classify the above three layers.</p>
+    </div>
+
+    <div style="background:white;border-radius:5px;padding:1.4rem 1.8rem;margin:1.2rem 0;border:1px solid var(--mist2)">
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--jade);margin-bottom:1rem">2.2.3.2 Problem 2 — Individual Role Metrics</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;margin-bottom:1.2rem">
+        <div><strong style="font-size:.84rem">Degree Centrality</strong><p style="font-size:.8rem;opacity:.72;margin-top:.3rem;line-height:1.55">How many people does this person know? → Social activity level.</p></div>
+        <div><strong style="font-size:.84rem">Betweenness Centrality</strong><p style="font-size:.8rem;opacity:.72;margin-top:.3rem;line-height:1.55">Is this person a "middleman"? → Information and resource control.</p></div>
+        <div><strong style="font-size:.84rem">Clustering Coefficient</strong><p style="font-size:.8rem;opacity:.72;margin-top:.3rem;line-height:1.55">Do this person's friends also know each other? → In tight circles or loosely connected.</p></div>
+      </div>
+      <p style="font-size:.82rem;opacity:.75;line-height:1.65">Based on the data from this document, the calculation of the three centrality measures was performed using the NetworkX library in Python. First, a network was constructed based on co-occurrence analysis of the original text: 20 characters served as nodes, and an edge was established whenever two characters appeared together in the same narrative unit, resulting in an undirected graph with <strong>53 edges and a density of 0.279</strong>. Then, three core functions were applied: <code>degree_centrality()</code> calculates the proportion of connections a node has relative to the maximum possible, reflecting social activity; <code>betweenness_centrality()</code> computes the frequency with which a node lies on the shortest paths between other pairs, measuring control over information flow; and <code>clustering()</code> determines the ratio of actual to possible connections among a node's neighbors, indicating local cohesiveness. The results were exported as a table: Han Li has a degree centrality of 0.9474, a betweenness centrality of 0.2609, and a clustering coefficient of 0.0083; Doctor Mo has the highest betweenness at 0.4187; and Zhang Tie has the highest clustering coefficient at 0.0906. This process enables automated quantification from literary co-occurrence to network metrics.</p>
+    </div>
+
+    <div class="repro-note">
+      <strong>Reproducibility note:</strong><br>
+      1. The Corpus of the novel saved as NOVEL TEXT.txt.<br>
+      2. All of the analysis and charts in this article can be reproduced by running a script. The code is archived as CODE for future reference.
+    </div>
+  </div>
+</section>
+
+<!-- ─── 03 CHARACTER RELATIONSHIP NETWORK ─────────────── -->
+<section class="sec" id="s3">
+  <div class="si">
+    <div class="slbl">03 — Visualisation</div>
+    <h2 class="stitle">The Relationship Network of Characters in Qixuanmen Space</h2>
+    <div class="dvd"></div>
+    <p style="font-size:.88rem;opacity:.65;margin-bottom:.4rem">Force-directed graph based on actual co-occurrence data (20 nodes, 53 edges, density = 0.279). Node size = degree centrality. Edge thickness = co-occurrence frequency. Hover a node to inspect all three metrics. Filter by faction below.</p>
+    <p style="font-family:var(--fm);font-size:.6rem;opacity:.38;margin-bottom:1.8rem">Source: Python NetworkX analysis of <em>A Record of a Mortal's Journey to Immortality</em>, Chapters 1–99</p>
+    <div id="net-wrap">
+      <canvas id="net-c" height="520"></canvas>
+      <div class="nip" id="nip">
+        <div class="nip-name" id="nip-n">—</div>
+        <div class="nip-tag" id="nip-f">—</div>
+        <div class="nip-row"><span class="nip-lbl">Degree Centrality</span><span id="nip-dc">—</span></div>
+        <div class="nip-row"><span class="nip-lbl">Betweenness</span><span id="nip-bc">—</span></div>
+        <div class="nip-row"><span class="nip-lbl">Clustering Coeff.</span><span id="nip-cc">—</span></div>
+        <div class="nip-row"><span class="nip-lbl">Faction</span><span id="nip-fa">—</span></div>
+      </div>
+    </div>
+    <div class="vc">
+      <button class="btn on" onclick="fnet('all',this)">All</button>
+      <button class="btn" onclick="fnet('Disciple Factions',this)">Disciple</button>
+      <button class="btn" onclick="fnet('Management Factions',this)">Management</button>
+      <button class="btn" onclick="fnet('Attendant Faction',this)">Attendant</button>
+      <button class="btn" onclick="fnet('Outer Faction',this)">Outer</button>
+      <button class="btn" onclick="fnet('External Personnel',this)">External</button>
+      <button class="btn" onclick="rnet()">↺ Reset</button>
+    </div>
+    <div class="vleg">
+      <div class="li"><div class="ld" style="background:#7a2030"></div>Disciple Factions</div>
+      <div class="li"><div class="ld" style="background:#b8832e"></div>Management Factions</div>
+      <div class="li"><div class="ld" style="background:#2e6e5a"></div>Attendant Faction</div>
+      <div class="li"><div class="ld" style="background:#6b5bb3"></div>Outer Faction</div>
+      <div class="li"><div class="ld" style="background:#1a6e8e"></div>Master-Disciple</div>
+      <div class="li"><div class="ld" style="background:#555"></div>Qijue Hall / External</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 04 CHARACTER ROLE TYPES ───────────────────────── -->
+<section class="sec sec--alt" id="s4">
+  <div class="si">
+    <div class="slbl">04 — Analysis</div>
+    <h2 class="stitle">Character Narrative Role Types in Qixuanmen Space Network</h2>
+    <div class="dvd"></div>
+
+    <!-- TAB NAVIGATION -->
+    <div class="tab-nav">
+      <button class="tab-btn on" onclick="showTab('t1',this)">Character Metrics</button>
+      <button class="tab-btn" onclick="showTab('t2',this)">Composite Types</button>
+      <button class="tab-btn" onclick="showTab('t3',this)">Role Classification</button>
+      <button class="tab-btn" onclick="showTab('t4',this)">Narrative Evidence</button>
+    </div>
+
+    <!-- TAB 1: Character Metrics -->
+    <div class="tab-panel on" id="t1">
+      <p style="font-size:.82rem;opacity:.65;margin-bottom:1rem">All 20 characters with computed degree centrality, betweenness centrality, and clustering coefficient. Click column headers to sort.</p>
+      <div class="tbl-wrap">
+        <table class="dt" id="metrics-tbl">
+          <thead><tr>
+            <th onclick="sortTable(0)" style="cursor:pointer">Character ▲</th>
+            <th onclick="sortTable(1)" style="cursor:pointer">Degree Centrality ▲</th>
+            <th onclick="sortTable(2)" style="cursor:pointer">Betweenness Centrality ▲</th>
+            <th onclick="sortTable(3)" style="cursor:pointer">Clustering Coefficient ▲</th>
+            <th>Faction</th>
+          </tr></thead>
+          <tbody id="metrics-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 2: Composite Types -->
+    <div class="tab-panel" id="t2">
+      <p style="font-size:.82rem;opacity:.65;margin-bottom:1rem">Six composite type patterns combining degree centrality, betweenness centrality, and clustering coefficient, with textual evidence.</p>
+      <div class="tbl-wrap">
+        <table class="dt">
+          <thead><tr><th>Composite Type</th><th>Degree</th><th>Betweenness</th><th>Clustering</th><th>Theoretical Explanation</th><th>Real Cases</th></tr></thead>
+          <tbody id="composite-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: Role Classification -->
+    <div class="tab-panel" id="t3">
+      <p style="font-size:.82rem;opacity:.65;margin-bottom:1rem">Five structural role types with indicator characteristics and representative figures.</p>
+      <div class="tbl-wrap">
+        <table class="dt">
+          <thead><tr><th>Character Type</th><th>Indicator Characteristics</th><th>Representative Figure</th><th>Basis for Judgment</th></tr></thead>
+          <tbody id="roles-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 4: Narrative Evidence -->
+    <div class="tab-panel" id="t4">
+      <p style="font-size:.82rem;opacity:.65;margin-bottom:1rem">Character types with structural features, narrative functions, and original plot evidence.</p>
+      <div class="tbl-wrap">
+        <table class="dt">
+          <thead><tr><th>Character Type</th><th>Structural Features</th><th>Narrative Function</th><th>Original Plot Evidence</th></tr></thead>
+          <tbody id="evidence-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 05 RESEARCH CONCLUSIONS ───────────────────────── -->
+<section class="sec" id="s5">
+  <div class="si">
+    <div class="slbl">05 — Conclusions</div>
+    <h2 class="stitle">Research Conclusions</h2>
+    <div class="dvd"></div>
+    <p class="body-p">Based on chapters 1–100 of <em>A Record of a Mortal's Journey to Immortality</em>, this study uses social network analysis to quantitatively and systematically analyse the relationship network of the characters in the Qixuanmen narrative space. Based on the above findings, four conclusions are drawn:</p>
+    <div class="conc-grid">
+      <div class="conc-card">
+        <div class="conc-num">Conclusion 1</div>
+        <div class="conc-title">Protagonist Centralisation as a Structural Law</div>
+        <div class="conc-body">The core–periphery distribution of the relationship network of Qixuanmen characters is extremely different: the degree centrality of Han Li (0.95) is much higher than that of all other characters, and the whole network only forms a "star" topology with him as a single core. This structural feature is not a case unique to <em>A Record of a Mortal's Journey to Immortality</em>, but a quantitative reflection of the "protagonist-centered" narrative convention in the level of character relations in network literature. Different from the multi-centre and multi-threaded network of characters in classical literature, xianxia novels highly compress the complexity of the school world into a single-centre radiation network from the perspective of the protagonist; the transmission of information, resources, and conflicts are all based on the protagonist node as the only hub.<br><br>This conclusion has methodological value for the comparative study of xianxia literature: by calculating the ratio of the degree centrality of the protagonist nodes to the average value of the whole network (about 5.8 times in this study), one can quantify the degree of "centralising the protagonist" in different works and provide an operable index for horizontal comparison of genre literature.</div>
+      </div>
+      <div class="conc-card">
+        <div class="conc-num">Conclusion 2</div>
+        <div class="conc-title">Betweenness Centrality Reveals Implicit Narrative Power</div>
+        <div class="conc-body">The most valuable finding of this study is the following: in the narrative network of the Qixuan sect, the betweenness centrality of the person with the highest nominal power (Sect Leader Wang, bc = 0.057) was much lower than that of the guest elder (Doctor Mo, bc = 0.419) and the outer member (Third Uncle Han, bc = 0.327). This systematic misalignment of "structural power" and "nominal power" shows that the expression of power in xianxia narration is not single and linear; instead, it embeds a set of implicit power logic contrary to the formal power hierarchy through the narrative structure itself.<br><br>The high betweenness centrality of Doctor Mo and Third Uncle Han stems from their special "structural position" in narrative arrangement: the former is the only bridge between the devotion system and the core of the school management; the latter is the only introduction channel between the external world and the internal world of the Qixuan School. The existence of these two "structural holes" not only endows these two characters with structural power beyond their narrative proportion but also implies that xianxia narrative often uses key plot events to construct the power pattern artificially, giving specific functional roles — guides, devotees, hermits — irreplaceable narrative value.</div>
+      </div>
+      <div class="conc-card">
+        <div class="conc-num">Conclusion 3</div>
+        <div class="conc-title">Clustering Coefficient Reveals Inter-Layer Structural Isolation</div>
+        <div class="conc-body">In the Qixuanmen network, the clustering coefficient of most characters is close to zero, and the only node with a significantly high clustering coefficient in the whole network — Zhang Tie (cc = 0.091) — has exactly zero betweenness centrality. The reverse correspondence between the two shows that there is an obvious phenomenon of "inter-layer isolation" in the narrative network: between the characters deeply embedded in a certain narrative layer (such as the disciples' small circle) and the characters with cross-layer intermediary ability, two distinct modes of narrative function are constituted with little overlap between the two.<br><br>This conclusion shows that the narrative levels of the Qixuan school — the devotion level, the management level, the disciple level, and the outer door level — are relatively closed in structure: there is a certain self-consistency within each level, and communication between layers depends on a few "pivot nodes." This inter-level isolation structure is highly corresponding to the fine setting of the school system in xianxia novels (different ranks, regions, and practice systems), showing that the structural form of the narrative network itself carries the function of world-view construction.</div>
+      </div>
+      <div class="conc-card">
+        <div class="conc-num">Conclusion 4</div>
+        <div class="conc-title">Social Network Analysis as an Operational Quantitative Path</div>
+        <div class="conc-body">Traditional literary criticism's classification of character functions — such as Propp's functional classification and Greimas's role model — relies on researchers' subjective interpretation, which is difficult to avoid interpretation bias. Through the combined analysis of three quantitative indicators, this study identifies five types of character functions with internal consistency, and verifies the rationality of each type of narrative with evidence from the original plot. The advantage of this approach is that the classification is transparent and reproducible, and the coverage of the text is systematic. All valid nodes are included in the classification rather than relying on the researchers' selective interpretation of key paragraphs.<br><br>Of course, social network analysis has inherent limitations: it cannot capture the emotional texture of relationships (love, hostility, fear), and it is difficult to deal with dynamic changes in the nature of relationships (for example, relationships changing from cooperation to antagonism). In this study, co-occurrence frequency is used as relationship weight, which simplifies the complexity of narrative relationships to a certain extent. On this basis, future research can introduce directed graphs, emotional annotation, and time series analysis to track the evolution of relationship networks in different chapters.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 06 OPEN SOURCES ────────────────────────────────── -->
+<section class="sec sec--alt" id="s6">
+  <div class="si">
+    <div class="slbl">06 — Open Sources &amp; References</div>
+    <h2 class="stitle">Datasets, Tools</h2>
+    <div class="dvd"></div>
+    <table class="src-tbl">
+      <thead><tr><th>Type</th><th>Website</th><th>Remarks</th><th>Access</th></tr></thead>
+      <tbody>
+        <tr><td>Chinese Text Corpus</td><td><a class="src-a" href="https://www.sudugu.org/128/txt.html#dir" target="_blank">sudugu.org/128/txt.html#dir</a></td><td>"A Record of a Mortal's Journey to Immortality" complete text — original novel by Wang Yu, chapters 1–99. Mainly used as corpus for natural language processing.</td><td><span class="sbdg">Open</span></td></tr>
+        <tr><td>English Translation</td><td><a class="src-a" href="https://www.wuxiaworld.com/novel/rmji" target="_blank">wuxiaworld.com/novel/rmji</a></td><td>English translation of 'A Record of a Mortal's Journey to Immortality'. Used for cross-referencing the romanised spelling of character names.</td><td><span class="sbdg">Open</span></td></tr>
+        <tr><td>China Biographical Database (CBDB)</td><td><a class="src-a" href="https://db1.ihp.sinica.edu.tw/cbdb/" target="_blank">db1.ihp.sinica.edu.tw/cbdb/</a></td><td>Jointly established by Harvard University, Peking University, and others. It contains real historical data and defines 'types of relationships' (such as master-apprentice, kinship, affiliation, etc.), which can serve as a good reference. Its relationship classification system can be used as a reference for labelling characters in 'Seven Mysterious Sect'.</td><td><span class="sbdg">Open</span></td></tr>
+        <tr><td>Dictionary Tool</td><td><a class="src-a" href="https://www.zdic.net/" target="_blank">zdic.net</a></td><td>The text of 'A Record of a Mortal's Journey to Immortality' contains a large number of ancient Chinese terms of address. Using Han Dian (Chinese Dictionary) can assist in translating the text.</td><td><span class="sbdg">Open</span></td></tr>
+        <tr><td>Python NLP</td><td><a class="src-a" href="https://spacy.io/models/zh" target="_blank">spacy.io/models/zh</a></td><td>A natural language processing pipeline for named entity recognition and Chinese word segmentation.</td><td><span class="sbdg">MIT</span></td></tr>
+
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── 07 REFERENCES ─────────────────────────────────── -->
+<section class="sec" id="s7">
+  <div class="si">
+    <div class="slbl">07 — Open Sources &amp; References</div>
+    <h2 class="stitle">References</h2>
+    <div class="dvd"></div>
+    <div class="ref-list">
+      <p>Bastian, M., Heymann, S., &amp; Jacomy, M. (2009). Gephi: An open source software for exploring and manipulating networks. <em>Proceedings of the International AAAI Conference on Web and Social Media, 3</em>(1). https://gephi.org/publications/gephi-bastian-feb09.pdf</p>
+      <p>Blondel, V. D., Guillaume, J.-L., Lambiotte, R., &amp; Lefebvre, E. (2008). Fast unfolding of communities in large networks. <em>Journal of Statistical Mechanics: Theory and Experiment, 2008</em>(10). https://doi.org/10.1088/1742-5468/2008/10/P10008</p>
+      <p>Fan, C. (2020). Research on relationships of characters in the Dream of the Red Chamber based on co-word analysis. <em>ICIC Express Letters Part B, Applications, 11</em>(5), 493–500.</p>
+      <p>Freeman, L. C. (1977). A set of measures of centrality based on betweenness. <em>Sociometry, 40</em>(1), 35–41. https://doi.org/10.2307/3033543</p>
+      <p>Hammond, A., Brooke, J., &amp; Hirst, G. (2013). A tale of two cultures: Bringing literary analysis and computational linguistics together. <em>Proceedings of the 2nd Workshop on Computational Linguistics for Literature</em>, 1–8.</p>
+      <p>Janicke, S., Franzini, G., Cheema, M. F., &amp; Scheuermann, G. (2015). On close and distant reading in digital humanities: A survey and future challenges. <em>Proceedings of EuroVis 2015</em>, 83–103.</p>
+      <p>John, M., Baumann, M., Schuetz, D., &amp; Lohmann, S. (2019). A visual approach for the comparative analysis of character networks in narrative texts. <em>2019 IEEE Pacific Visualization Symposium</em>, 247–256. https://doi.org/10.1109/PacificVis.2019.00038</p>
+      <p>Newman, M. E. J., &amp; Girvan, M. (2004). Finding and evaluating community structure in networks. <em>Physical Review E, 69</em>(2). https://doi.org/10.1103/PhysRevE.69.026113</p>
+      <p>刘思聪, 戴瑶琴. (2024). 社会网络分析视域下张翎长篇小说人物关系研究. <em>世界华文文学论坛, 2</em>, 70–80.</p>
+      <p>姚睿琦, 张辉, 姚云洪. (2021). 社会网络分析方法在金庸小说人物关系中的应用研究. <em>文献与数据学报, 3</em>(3), 68–80.</p>
+      <p>张紫芸, 王文发, 何进荣, 马乐荣. (2024). 《水浒传》人物关系网络分析. <em>计算机应用与软件, 41</em>(5), 340–344.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 08 COLLABORATION LOG ──────────────────────────── -->
+<section class="sec sec--alt" id="s8">
+  <div class="si">
+    <div class="slbl">08 — Collaboration</div>
+    <h2 class="stitle">Member Collaboration Log</h2>
+    <div class="dvd"></div>
+    <div class="tracker">
+      <div class="trk-hdr">
+        <h3>Group 6 — Project Engagement Dashboard</h3>
+        <span class="trk-tag">Week 8 → Week 12</span>
+      </div>
+      <div class="mem-grid" id="mem-grid"></div>
+      <div id="wk-wrap">
+        <div class="ct">Weekly Contribution Activity</div>
+        <canvas id="wk-c" height="115"></canvas>
+      </div>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>
+    <strong>Relational Structure &amp; Role Types in the Seven Mysterious Sect</strong><br>
+    XUSHIYI (25087273) &nbsp;·&nbsp; YUAN JIANGCONG (25086223) &nbsp;·&nbsp; Digital Humanities Group 6<br>
+    Corpus: <a href="https://www.sudugu.org/128/txt.html#dir">sudugu.org</a> &nbsp;·&nbsp;
+    <a href="https://www.wuxiaworld.com/novel/rmji">wuxiaworld.com</a> &nbsp;·&nbsp;
+    <a href="https://cbdb.fas.harvard.edu/">CBDB</a> &nbsp;·&nbsp;
+    <a href="https://gephi.org/">Gephi</a> &nbsp;·&nbsp;
+    <a href="https://networkx.org/">NetworkX</a>
+  </p>
+</footer>
+
+<!-- ═════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════ -->
+<script>
+/* ══ DATA ═══════════════════════════════════════════════════ */
+const CHARS = [
+  {n:"Han Li",          dc:0.9474, bc:0.2609, cc:0.0083, faction:"Disciple Factions",    col:"#7a2030", r:26},
+  {n:"Doctor Mo",       dc:0.4211, bc:0.4187, cc:0.0220, faction:"Attendant Faction",    col:"#2e6e5a", r:17},
+  {n:"Third Uncle Han", dc:0.4211, bc:0.3273, cc:0.0065, faction:"Outer Faction",        col:"#6b5bb3", r:17},
+  {n:"Li Feiyu",        dc:0.4737, bc:0.2680, cc:0.0161, faction:"Disciple Factions",    col:"#7a2030", r:18},
+  {n:"Sect Leader Ma",  dc:0.3684, bc:0.0102, cc:0.0063, faction:"Management Factions",  col:"#b8832e", r:15},
+  {n:"Sect Leader Wang",dc:0.3158, bc:0.0569, cc:0.0162, faction:"Management Factions",  col:"#b8832e", r:14},
+  {n:"Elder Li",        dc:0.3158, bc:0.0088, cc:0.0131, faction:"Management Factions",  col:"#b8832e", r:14},
+  {n:"Wu Yan",          dc:0.2632, bc:0.0301, cc:0.0062, faction:"Qijue Hall Sect",      col:"#555",    r:13},
+  {n:"Ma Rong",         dc:0.2632, bc:0.0185, cc:0.0201, faction:"Master-Disciple Factions", col:"#1a6e8e", r:13},
+  {n:"Elder Zhao",      dc:0.2105, bc:0.0322, cc:0.0153, faction:"Management Factions",  col:"#b8832e", r:12},
+  {n:"Zhang Changgui",  dc:0.2105, bc:0.1053, cc:0.0115, faction:"Disciple Factions",    col:"#7a2030", r:12},
+  {n:"Protector Wang",  dc:0.2105, bc:0.0301, cc:0.0029, faction:"Management Factions",  col:"#b8832e", r:12},
+  {n:"Yue Ming",        dc:0.1579, bc:0.0726, cc:0.0040, faction:"Management Factions",  col:"#b8832e", r:11},
+  {n:"Wang Dapang",     dc:0.1579, bc:0.0000, cc:0.0186, faction:"Disciple Factions",    col:"#7a2030", r:11},
+  {n:"Zhang Tie",       dc:0.1579, bc:0.0000, cc:0.0906, faction:"Disciple Factions",    col:"#7a2030", r:11},
+  {n:"Little Abacus",   dc:0.1579, bc:0.0000, cc:0.0286, faction:"Disciple Factions",    col:"#7a2030", r:11},
+  {n:"Han's Father",    dc:0.1579, bc:0.0000, cc:0.0109, faction:"External Personnel",   col:"#c0392b", r:11},
+  {n:"Han's Mother",    dc:0.1579, bc:0.0931, cc:0.0076, faction:"External Personnel",   col:"#c0392b", r:11},
+  {n:"Zhang Jun",       dc:0.1053, bc:0.1035, cc:0.0234, faction:"Disciple Factions",    col:"#7a2030", r:10},
+  {n:"Elder Qian",      dc:0.1053, bc:0.0000, cc:0.0215, faction:"Management Factions",  col:"#b8832e", r:10},
+];
+
+const FACTION_COLOR = {
+  "Disciple Factions":       "#7a2030",
+  "Management Factions":     "#b8832e",
+  "Attendant Faction":       "#2e6e5a",
+  "Outer Faction":           "#6b5bb3",
+  "Qijue Hall Sect":         "#555555",
+  "External Personnel":      "#c0392b",
+  "Master-Disciple Factions":"#1a6e8e",
+};
+
+/* ── Populate metrics table ─────────────────────────── */
+const FACTION_BADGE = {
+  "Disciple Factions":"fb-disc","Management Factions":"fb-mgmt",
+  "Attendant Faction":"fb-att","Outer Faction":"fb-out",
+  "Qijue Hall Sect":"fb-qij","External Personnel":"fb-ext",
+  "Master-Disciple Factions":"fb-mast",
+};
+const mb = document.getElementById('metrics-body');
+CHARS.forEach(c => {
+  mb.insertAdjacentHTML('beforeend', `<tr>
+    <td><strong>${c.n}</strong></td>
+    <td class="num-cell">${c.dc.toFixed(4)}</td>
+    <td class="num-cell">${c.bc.toFixed(4)}</td>
+    <td class="num-cell">${c.cc.toFixed(4)}</td>
+    <td><span class="fact-badge ${FACTION_BADGE[c.faction]||''}">${c.faction}</span></td>
+  </tr>`);
+});
+
+/* sortable */
+let sortDir = {};
+function sortTable(col) {
+  const tbody = document.getElementById('metrics-body');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  sortDir[col] = !(sortDir[col]);
+  rows.sort((a,b) => {
+    const av = a.cells[col].textContent.trim();
+    const bv = b.cells[col].textContent.trim();
+    const an = parseFloat(av), bn = parseFloat(bv);
+    const cmp = isNaN(an) ? av.localeCompare(bv) : an - bn;
+    return sortDir[col] ? cmp : -cmp;
+  });
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+/* ── Composite types ─────────────────────────────────── */
+const COMPOSITE = [
+  ["High-High-Low","High (>0.40)","High (>0.20)","Extremely low (<0.03)","Core Hub: Knows many people and serves as a bridge between different groups, but does not form a tight-knit clique themselves — a 'structural hole filler'.","Han Li (dc=0.95, bc=0.26, cc=0.008); Li Feiyu (dc=0.47, bc=0.27, cc=0.016). Han Li knows Li Feiyu and Zhang Tie at the disciple level, follows Doctor Mo to study medicine at the offering level, interacts directly multiple times with Sect Leader Wang and Elder Li at the management level, and obtains information from Third Uncle Han at the outer gate level — there are direct relationships at all four levels, while characters at different levels hardly interact with each other, confirming the low clustering coefficient."],
+  ["Medium-High-Low","Medium (0.30–0.45)","High (>0.30)","Low (<0.03)","Key Bridges: The number of acquaintances is moderate, but each connection spans different levels, with extremely strong information control — 'cross-level transmission nodes'.","Doctor Mo (dc=0.42, bc=0.42, cc=0.022); Third Uncle Han (dc=0.42, bc=0.33, cc=0.007). Doctor Mo once saved the life of Sect Leader Wang (management level) and was granted a position as an attendant. He also took Han Li as his disciple (disciple level), and interacted with Elder Zhao and Sect Leader Ma — his betweenness centrality is the highest across the entire network (0.42), confirming his status as the sole bridge between the 'attendant level ↔ core sect level.' Third Uncle Han is the only channel from 'outer disciples ↔ Han Li', through whom Han Li was introduced to the Seven Mysterious Sect."],
+  ["High-Medium-Low","High (>0.40)","Medium (0.15–0.30)","Low (<0.03)","Active Bridgers: Individuals with a wide social range and certain cross-group intermediary capabilities, but the connections between their contacts are still relatively sparse.","Li Feiyu (dc=0.47, bc=0.27, cc=0.016). Li Feiyu has direct interactions with disciples such as Han Li, Little Abacus, and Zhang Changgui, and has also infiltrated the main room of the Wang family alone to gather intelligence (crossing into the management level). He appeared during Elder Li's detoxification event and is the character with the most cross-level connections among the disciples, although the individuals he connects have limited interactions with each other."],
+  ["Medium-Low-Low","Medium (0.15–0.40)","Low (<0.10)","Low (<0.03)","Local Participants: Have a certain breadth of connections within a specific level, but almost never act as intermediaries across levels.","Sect Leader Ma (dc=0.37, bc=0.01); Sect Leader Wang (dc=0.32, bc=0.06); Elder Li (dc=0.32, bc=0.01). Sect Leader Wang primarily engages with elders within the management level and occasionally comes into direct contact with Han Li, but these interactions are concentrated in specific plot points and are not regular cross-level intermediations."],
+  ["Low-Low-High (Relative)","Low (<0.20)","≈0","Relatively highest in network","Faction Anchor: Social range is narrow, rarely crossing layers, but within the small circle to which one belongs, neighbour relationships are highly interconnected.","Zhang Tie (dc=0.16, bc=0.00, cc=0.091) — the only node in the entire network with a clustering coefficient significantly above 0. Zhang Tie appears in the same plot context as Han Li, Li Feiyu, and Doctor Mo (entering Doctor Mo's discipleship along with Han Li), and his neighbours indeed know each other; however, Zhang Tie has never interacted individually with members of the management or outer layers, and his betweenness centrality of 0 confirms that he does not serve as a bridge across different layers."],
+  ["Low-Low-Low","Low (<0.15)","Low (≈0)","Low (<0.03)","Peripheral Traversal: Rarely enters the core of the network, with very few connections, providing only background or one-time triggers.","Elder Qian (dc=0.11, bc=0.00, cc=0.022). Elder Qian only appears during the scene 'Sect Leader Ma introduces the people present to Han Li,' where he is described as 'having special inner skills and being indifferent to everyone.' Apart from this, he has no independent plot. In the network, his node is only connected to Sect Leader Ma and Han Li, making him a typical background character."],
+];
+const cb = document.getElementById('composite-body');
+COMPOSITE.forEach(r => {
+  cb.insertAdjacentHTML('beforeend',`<tr>
+    <td><strong>${r[0]}</strong></td>
+    <td class="num-cell">${r[1]}</td><td class="num-cell">${r[2]}</td><td class="num-cell">${r[3]}</td>
+    <td style="font-size:.76rem;line-height:1.5">${r[4]}</td>
+    <td style="font-size:.76rem;line-height:1.5">${r[5]}</td>
+  </tr>`);
+});
+
+/* ── Role classification ─────────────────────────────── */
+const ROLES = [
+  ["Core Hub Type","Degree centrality > 0.40 | Betweenness Centrality > 0.20 | Clustering coefficient extremely low (<0.03)","Han Li (dc=0.95, bc=0.26) | Doctor Mo (dc=0.42, bc=0.42) | Third Uncle Han (dc=0.42, bc=0.33) | Li Feiyu (dc=0.47, bc=0.27)","Having many connections and spanning different levels makes one a filler of structural holes; an extremely low clustering coefficient indicates that its connected nodes do not know each other, reflecting a 'bridge' property."],
+  ["Transitional Connector","Degree centrality 0.15–0.40 | Betweenness Centrality 0.05–0.15 | Clustering coefficient relatively low (<0.03)","Sect Leader Wang (dc=0.32, bc=0.06) | Zhang Changgui (dc=0.21, bc=0.11) | Yue Ming (dc=0.16, bc=0.07) | Zhang Jun (dc=0.11, bc=0.10)","Situated in the intermediate layer of the network, it possesses a certain capability to connect across groups, but its scope is limited; in the narrative, it serves the function of advancing specific events."],
+  ["Partial Participation","Degree centrality 0.15–0.40 | Betweenness Centrality <0.05 | Clustering coefficient low (<0.03)","Sect Leader Ma (dc=0.37, bc=0.01) | Elder Li (dc=0.32, bc=0.01) | Wu Yan (dc=0.26, bc=0.03) | Ma Rong (dc=0.26, bc=0.02) | Elder Zhao, Protector Wang, and others","Active within a specific scenario or level, but lacking cross-level influence; the narrative function mainly serves to drive local plot developments or provide information."],
+  ["Faction-Anchored Type","Degree centrality <0.20 | Betweenness Centrality ≈0 | Clustering Coefficient the highest on the entire network (>0.05)","Zhang Tie (dc=0.16, bc=0.00, cc=0.091)","Deeply embedded within small circles of peers at the same level, with high interconnectivity among neighbours; its narrative function serves as an emotional anchor and a stabilising point for the peer group, without participating in cross-level information transmission."],
+  ["Marginal Wanderer Type","Degree centrality < 0.15 | Betweenness Centrality = 0 | Clustering coefficient extremely low","Elder Qian (dc=0.11, bc=0.00) and a small number of individuals not included in the core statistics","Almost detached from the core network, with very few connections; its narrative function is mainly to provide background or trigger a one-time plot event."],
+];
+const rb = document.getElementById('roles-body');
+ROLES.forEach(r => {
+  rb.insertAdjacentHTML('beforeend',`<tr>
+    <td><strong>${r[0]}</strong></td>
+    <td style="font-size:.76rem;line-height:1.5">${r[1]}</td>
+    <td style="font-size:.76rem;line-height:1.5;font-family:var(--fm)">${r[2]}</td>
+    <td style="font-size:.76rem;line-height:1.5">${r[3]}</td>
+  </tr>`);
+});
+
+/* ── Narrative evidence ─────────────────────────────── */
+const EVIDENCE = [
+  ["Core Hub Type (Han Li, Doctor Mo, Third Uncle Han, Li Feiyu)","Structural Hole Filler | High Betweenness Centrality | Extremely Low Clustering Coefficient","Connecting different narrative lines (disciple layer / management layer / external branch / devotee), gathering information from multiple sources, and driving the main conflict; the absolute node of narrative space integration.","[Han Li] Simultaneously holds four cross-layer pathways: ① attendant layer: Doctor Mo accepts Han Li as a disciple to teach medical skills. ② Outer Sect Layer: Third Uncle Han introduces Han Li to the Seven Mysterious Sect. ③ Management Layer: Han Li is summoned by Sect Leader Wang and becomes involved in factional power struggles. ④ Disciple Layer: Regularly interacts with Li Feiyu, Zhang Tie, and Little Abacus — characters in each layer have almost no direct connection with one another; Han Li is the sole pathway. [Doctor Mo] 'Doctor Mo… saved the life of Sect Leader Wang… and then invited him back into the sect' (treatment → qualification for devotion), connecting to the core of management; simultaneously accepted Han Li as a disciple (master-disciple relationship), connecting to the disciple layer; moreover, was repeatedly cited by Sect Leader Ma and Elder Zhao in medical matters — ranking first in overall Betweenness Centrality (0.42)."],
+  ["Transitional Connector Type (Sect Leader Wang, Zhang Changgui, Yue Ming, Zhang Jun)","Local Bridge | Moderate Betweenness Centrality (0.05–0.15)","Transmit information or power between specific narrative units, serving the 'intermediary' role in advancing events, and connecting local plotlines with the main storyline.","[Sect Leader Wang] 'Sect Leader Wang suddenly proposed this deadly fight' — proactively initiating a cross-level conflict (management → main plot); also sent a trusted subordinate with a token to summon Elder Li to the mountain for discussion, acting as a relay hub for instructions within the management level (bc=0.057). [Yue Ming] 'Chief Yue glanced boldly at Han Li and the others… and sent them to the Qingke Courtyard' — responsible for receiving new disciples, serving as the narrative's 'first checkpoint' for disciples entering the sect (bc=0.073). [Zhang Changgui] In the disciple competition scene, he both faces Li Feiyu and appears alongside Wang Dapang, fulfilling the role of narrative linkage between different small groups within the disciple level (bc=0.105)."],
+  ["Partial Participation (Sect Leader Ma, Elder Li, Wu Yan, Ma Rong, Elder Zhao, etc.)","Single-level active nodes | Low global betweenness (<0.05)","Exerting authority or functional roles within specific power hierarchies; narrative value is concentrated in the construction of a single scene or institutional background.","[Sect Leader Ma] Appears as a representative of power in management-level meetings, but all interactions occur within the management layer, never acting as a cross-layer information intermediary (bc=0.010). [Elder Li] Is in a central position during the 'detoxification' plot, but this plot is a closed narrative unit (Han Li, Ma Rong, Elder Qian, Sect Leader Ma, Elder Zhao all serve this event), and Elder Li's connections are limited to this unit (bc=0.009). [Ma Rong] As Elder Li's favoured disciple, responsible for transmitting information between Han Li and Elder Li; the narrative function is the 'downward transmission node' in the master-disciple chain."],
+  ["Faction-Anchored Type (Zhang Tie)","Local Clustering Core | Betweenness Centrality Zero | Clustering Coefficient Highest in the Network (cc=0.091)","Stabilise the narrative unit of the disciple group (the 'brotherhood' storyline), serving as an emotional anchor; foster warmth within the circle without engaging in inter-layer narratives.","[Zhang Tie] is the first friend Han Li made after entering the Seven Mysteries Sect: Original Text ①: 'Zhang Tie handed Han Li two steaming buns… If you ever need help, just ask.' — providing the first emotional support to Han Li in a completely unfamiliar environment. Original Text ②: 'This is a remedy he specifically researched for Zhang Tie during his free time (to alleviate pain)' — Han Li developing a remedy solely for Zhang Tie represents the most concrete emotional interaction within the disciple ranks. Zhang Tie's neighbours (Han Li, Li Feiyu, Doctor Mo) also know each other, making his closeness central in the network; however, Zhang Tie never appears in management or outer ranks — betweenness centrality 0 confirms he is an emotional anchor rather than an information conduit."],
+  ["Marginal Wanderer Type (Elder Qian, Han's Father, Han's Mother, etc.)","Scattered Attachment Nodes | Very Low Interaction with Mediator (dc<0.15, bc=0)","Constitute the institutional and environmental background, highlighting the uniqueness of the main characters; provide a one-time plot trigger or information about their origin.","[Elder Qian] The original text only mentions him in the scene 'Detoxifying for Elder Li,' describing him as 'practising a special internal skill and indifferent to everyone.' He has no independent plotline, serving only to fill in the management personnel background (dc=0.11, connected only with Sect Leader Ma and Han Li). [Han's Father, Han's Mother] Appear very infrequently (3–6 times), mainly in the early chapters explaining Han Li's background: Third Uncle Han introducing the Seven Mysterious Sect to the family, and Han Li's farewell before leaving home. Narrative function is single: providing a motive for the protagonist to enter the cultivation world, without participating in the internal relationships of the Seven Mysterious Sect (bc=0)."],
+];
+const eb = document.getElementById('evidence-body');
+EVIDENCE.forEach(r => {
+  eb.insertAdjacentHTML('beforeend',`<tr>
+    <td><strong style="font-size:.8rem">${r[0]}</strong></td>
+    <td style="font-size:.76rem;line-height:1.5">${r[1]}</td>
+    <td style="font-size:.76rem;line-height:1.5">${r[2]}</td>
+    <td style="font-size:.76rem;line-height:1.5">${r[3]}</td>
+  </tr>`);
+});
+
+/* ── Tab switching ───────────────────────────────────── */
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+
+/* ══ NETWORK CANVAS ═════════════════════════════════════ */
+const nc = document.getElementById('net-c'), ctx = nc.getContext('2d');
+let W, H, nodes, filt = 'all', hov = null, raf;
+
+function iNet() {
+  W = nc.width = nc.parentElement.clientWidth; H = nc.height = 520;
+  const TC = {
+    "Disciple Factions":       {x:W*.28, y:H*.52},
+    "Management Factions":     {x:W*.65, y:H*.3},
+    "Attendant Faction":       {x:W*.5,  y:H*.65},
+    "Outer Faction":           {x:W*.12, y:H*.35},
+    "Qijue Hall Sect":         {x:W*.78, y:H*.68},
+    "External Personnel":      {x:W*.15, y:H*.78},
+    "Master-Disciple Factions":{x:W*.62, y:H*.62},
+  };
+  nodes = CHARS.map((c, i) => {
+    const fc = TC[c.faction] || {x:W/2,y:H/2};
+    const base = c.n === "Han Li"
+      ? {x:W*.42, y:H*.5}
+      : {x: fc.x + (Math.random()-.5)*140, y: fc.y + (Math.random()-.5)*110};
+    return {...c, ...base, vx:0, vy:0, id:i};
+  });
+  simulate();
+}
+
+function simulate() {
+  for (let it = 0; it < 110; it++) {
+    for (let i = 0; i < nodes.length; i++)
+      for (let j = i+1; j < nodes.length; j++) {
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy)||1, f=1600/(d*d);
+        nodes[i].vx+=f*dx/d; nodes[i].vy+=f*dy/d;
+        nodes[j].vx-=f*dx/d; nodes[j].vy-=f*dy/d;
+      }
+    // attraction by faction proximity
+    nodes.forEach(n => {
+      const fx = W/2, fy = H/2;
+      n.vx += (fx - n.x) * 0.002; n.vy += (fy - n.y) * 0.002;
+    });
+    nodes.forEach(n => {
+      n.x += n.vx*.22; n.y += n.vy*.22;
+      n.vx *= .78; n.vy *= .78;
+      n.x = Math.max(n.r+5, Math.min(W-n.r-5, n.x));
+      n.y = Math.max(n.r+5, Math.min(H-n.r-5, n.y));
+    });
+  }
+  renderNet();
+}
+
+function renderNet() {
+  if (raf) cancelAnimationFrame(raf);
+  function frame() {
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#0b0f18'; ctx.fillRect(0,0,W,H);
+    const vis = filt==='all' ? nodes : nodes.filter(n => n.faction === filt);
+    // Edges between nodes that are both visible
+    for (let i = 0; i < vis.length; i++)
+      for (let j = i+1; j < vis.length; j++) {
+        const ni = vis[i], nj = vis[j];
+        // Only draw edges where dc product suggests meaningful connection
+        const strength = (ni.dc + nj.dc) / 2;
+        if (strength < 0.12) continue;
+        const isH = hov && (hov===ni || hov===nj);
+        ctx.beginPath(); ctx.moveTo(ni.x, ni.y); ctx.lineTo(nj.x, nj.y);
+        ctx.strokeStyle = isH ? 'rgba(184,131,46,.5)' : 'rgba(255,255,255,.055)';
+        ctx.lineWidth = isH ? strength*3 : strength*1.4;
+        ctx.stroke();
+      }
+    vis.forEach(n => {
+      const ih = hov===n;
+      if (ih) {
+        const g = ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*2.4);
+        g.addColorStop(0, n.col+'4a'); g.addColorStop(1,'transparent');
+        ctx.save(); ctx.beginPath(); ctx.arc(n.x,n.y,n.r*2.4,0,Math.PI*2);
+        ctx.fillStyle=g; ctx.fill(); ctx.restore();
+      }
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fillStyle = ih ? n.col : n.col+'bb'; ctx.fill();
+      ctx.fillStyle = ih ? '#fff' : 'rgba(255,255,255,.72)';
+      ctx.font = `${ih?500:400} ${Math.max(7, n.r*.46)}px Inter,sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      // Short label
+      const lbl = n.n.split(' ').slice(0,2).join(' ');
+      ctx.fillText(n.n === 'Han Li' ? 'Han Li' : lbl.length > 10 ? lbl.slice(0,8)+'…' : lbl, n.x, n.y);
+    });
+    raf = requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+function fnet(t, btn) {
+  filt = t;
+  document.querySelectorAll('.vc .btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function rnet() { iNet(); }
+
+nc.addEventListener('mousemove', e => {
+  const r = nc.getBoundingClientRect();
+  const mx=(e.clientX-r.left)*(W/r.width), my=(e.clientY-r.top)*(H/r.height);
+  hov = null;
+  nodes.forEach(n => { const dx=n.x-mx,dy=n.y-my; if(Math.sqrt(dx*dx+dy*dy)<n.r+4) hov=n; });
+  const p = document.getElementById('nip');
+  if (hov) {
+    p.classList.add('on');
+    document.getElementById('nip-n').textContent = hov.n;
+    document.getElementById('nip-f').textContent  = hov.faction;
+    document.getElementById('nip-dc').textContent = hov.dc.toFixed(4);
+    document.getElementById('nip-bc').textContent = hov.bc.toFixed(4);
+    document.getElementById('nip-cc').textContent = hov.cc.toFixed(4);
+    document.getElementById('nip-fa').textContent = hov.faction;
+    nc.style.cursor = 'pointer';
+  } else { p.classList.remove('on'); nc.style.cursor='default'; }
+});
+
+/* ══ TRACKER ════════════════════════════════════════════ */
+const MEMBERS = [
+  {n:'XU SHIYI',    id:'25087273', role:'Python Pipeline & Visualisation', av:'X', col:'#b8832e', pts:95, wks:[0,9,10,10,9,0]},
+  {n:'YUAN JIANGCONG',id:'25086223',role:'Analysis, Writing & Verification', av:'Y', col:'#2e6e5a', pts:93, wks:[0,8,10,10,10,0]},
+];
+
+const LOGS_DATA = [
+  {wk:'WEEK 8', entries:[
+    {m:'YUAN JIANGCONG', t:"Downloaded chapters 1–100 text from sudugu.org; cleaned HTML tags; merged into plain text file (qixuanmen.txt)."},
+    {m:'XU SHIYI',       t:"Installed Python, jieba, pandas, networkx; verified environment."},
+    {m:'XU SHIYI',       t:"Wrote sentence-segmentation + jieba POS-tagging prototype; tested on first 10 chapters; verified encoding (UTF-8)."},
+    {m:'YUAN JIANGCONG', t:"Manual verification of the correctness of the small sample character extraction."},
+    {m:'YUAN JIANGCONG + XU SHIYI', t:"Weekly sync: confirmed character screening criteria; whether the sample of characters extracted from the small sample is valid."},
+  ]},
+  {wk:'WEEK 9', entries:[
+    {m:'XU SHIYI',       t:"Ran full-text co-occurrence extraction script; generated candidate edge list."},
+    {m:'YUAN JIANGCONG', t:"Manually verified each candidate edge against novel text passages; deleted pseudo-relations (co-occurrence without actual interaction)."},
+    {m:'YUAN JIANGCONG', t:"Supplementary coding: added institutional relations based on sect hierarchy, for example, disciples, master-apprentice."},
+    {m:'YUAN JIANGCONG', t:"Read secondary literature; referred to DHCN tutorial and Tencent Cloud SNA tutorial."},
+    {m:'YUAN JIANGCONG + XU SHIYI', t:"Weekly sync: confirmed final node count and edge count; prepared for network computation."},
+  ]},
+  {wk:'WEEK 10', entries:[
+    {m:'XU SHIYI',       t:"Imported edge list into NetworkX."},
+    {m:'XU SHIYI',       t:"Computed network density; computed degree centrality, betweenness centrality, and clustering coefficient for all nodes."},
+    {m:'XU SHIYI',       t:"Performed core–periphery stratification: normalised degree centrality."},
+    {m:'YUAN JIANGCONG', t:"Analysed indicator combinations (high-high-low, medium-high-low, high-medium-low, etc.) based on centrality triplets."},
+    {m:'YUAN JIANGCONG', t:"Induced structural role types from combination patterns: core hub, transitional connector, local participant, faction anchor, peripheral wanderer."},
+    {m:'YUAN JIANGCONG', t:"Wrote narrative function naming for each role type with textual evidence citations."},
+    {m:'XU SHIYI',       t:"Generated network visualisation."},
+    {m:'YUAN JIANGCONG + XU SHIYI', t:"Weekly sync: aligned role type taxonomy and verified representative characters per type against tables."},
+  ]},
+  {wk:'WEEK 11', entries:[
+    {m:'YUAN JIANGCONG', t:"Wrote Research Purpose + Research Questions as provided."},
+    {m:'XU SHIYI',       t:"Wrote data source, character selection criteria, relation extraction, analysis metrics; wrote Topological Structure."},
+    {m:'YUAN JIANGCONG', t:"Wrote Findings; Conclusion; research limitations."},
+    {m:'YUAN JIANGCONG', t:"Compiled References: formatted bibliography for DHCN URL, Tencent Cloud URL, and secondary literature used."},
+    {m:'YUAN JIANGCONG + XU SHIYI', t:"Weekly sync: merged all sections into draft document; verified tables and figure placement."},
+  ]},
+  {wk:'WEEK 12', entries:[
+    {m:'YUAN JIANGCONG', t:"Unified terminology across all sections; checked section numbering; applied formatting requirements."},
+    {m:'YUAN JIANGCONG', t:"Proofread entire paper for grammar, academic tone, and clarity; removed colloquial expressions."},
+    {m:'XU SHIYI',       t:"Verified all numerical data against code outputs: checked degree centrality, betweenness centrality, clustering coefficient for all nodes against the original .txt file."},
+    {m:'XU SHIYI',       t:"Prepared appendices: included the final Python script with all steps."},
+    {m:'XU SHIYI',       t:"Generated final network image."},
+    {m:'YUAN JIANGCONG', t:"Final QA of document."},
+    {m:'YUAN JIANGCONG + XU SHIYI', t:"Final sync: confirmed submission readiness; uploaded to designated platform before deadline."},
+  ]},
+];
+
+let aM = null;
+function bT() {
+  const g = document.getElementById('mem-grid'); g.innerHTML = '';
+  MEMBERS.forEach((m, i) => {
+    const d = document.createElement('div'); d.className = 'mem-card';
+    d.style.borderColor = aM===i ? m.col : 'rgba(255,255,255,.08)';
+    d.innerHTML = `<div class="mem-av" style="background:${m.col}22;color:${m.col}">${m.av}</div>
+      <div class="mem-name">${m.n}</div>
+      <div class="mem-role">${m.id} · ${m.role}</div>
+      <div class="mem-pts">${m.pts} pts</div>`;
+    d.onclick = () => { aM = aM===i ? null : i; bT(); dW(); };
+    g.appendChild(d);
+  });
+  const log = document.getElementById('log'); log.innerHTML = '';
+  LOGS_DATA.forEach(wk => {
+    const filtered = aM !== null
+      ? wk.entries.filter(e => e.m.includes(MEMBERS[aM].n.split(' ')[0]) || e.m.includes(MEMBERS[aM].n.split(' ')[1]))
+      : wk.entries;
+    if (filtered.length === 0) return;
+    log.insertAdjacentHTML('beforeend', `<div class="log-wk">${wk.wk}</div>`);
+    filtered.forEach(e => {
+      log.insertAdjacentHTML('beforeend', `<div class="log-e">
+        <span class="log-m">${e.m}</span>&nbsp;—&nbsp;${e.t}
+      </div>`);
+    });
+  });
+}
+
+function dW() {
+  const wc = document.getElementById('wk-c');
+  const W = wc.width = wc.parentElement.clientWidth - 30, H = wc.height = 115;
+  const wx = wc.getContext('2d'); wx.clearRect(0,0,W,H);
+  const wks = ['Wk8','Wk9','Wk10','Wk11','Wk12'];
+  const ms = aM !== null ? [MEMBERS[aM]] : MEMBERS;
+  const pL=24,pB=19,pR=7,pT=7,cW=W-pL-pR,cH=H-pB-pT;
+  [0,.25,.5,.75,1].forEach(f => {
+    const y=pT+cH*(1-f);
+    wx.strokeStyle='rgba(255,255,255,.05)'; wx.lineWidth=1;
+    wx.beginPath(); wx.moveTo(pL,y); wx.lineTo(W-pR,y); wx.stroke();
+    wx.fillStyle='rgba(255,255,255,.18)'; wx.font='6px Inter,sans-serif';
+    wx.textAlign='right'; wx.fillText(Math.round(f*10),pL-3,y+2.5);
+  });
+  wks.forEach((w,i) => {
+    const x=pL+i*(cW/(wks.length-1));
+    wx.fillStyle='rgba(255,255,255,.26)'; wx.font='6.5px Inter,sans-serif';
+    wx.textAlign='center'; wx.fillText(w,x,H-3);
+  });
+  ms.forEach(m => {
+    wx.beginPath();
+    m.wks.slice(1).forEach((v,i) => {
+      const x=pL+i*(cW/(wks.length-1)), y=pT+cH*(1-v/10);
+      i===0 ? wx.moveTo(x,y) : wx.lineTo(x,y);
+    });
+    wx.strokeStyle=m.col; wx.lineWidth=2; wx.stroke();
+    m.wks.slice(1).forEach((v,i) => {
+      const x=pL+i*(cW/(wks.length-1)), y=pT+cH*(1-v/10);
+      wx.beginPath(); wx.arc(x,y,2.5,0,Math.PI*2);
+      wx.fillStyle=m.col; wx.fill();
+    });
+  });
+}
+
+window.addEventListener('load',  () => { iNet(); bT(); dW(); });
+window.addEventListener('resize', () => { iNet(); dW(); });
+</script>
+</body>
+</html>
